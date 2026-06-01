@@ -1,7 +1,7 @@
 import {
   BALL_TYPE,
   BATTING_POSITION,
-  GENDER_CATEGORY,
+  isFemaleSegment,
   PLAYING_LEVEL,
   WILLOW_TYPE,
 } from "@/lib/constants/kioskTheme";
@@ -63,7 +63,8 @@ export function buildRecommendationPayload(kiosk) {
     playingLevel: PLAYING_LEVEL_API[kiosk.playingLevel] || "Beginner",
     willowType,
     username: username || "guest",
-    gender: kiosk.genderCategory === GENDER_CATEGORY.FEMALE ? "female" : "male",
+    gender: isFemaleSegment(kiosk.genderCategory) ? "female" : "male",
+    genderSegment: kiosk.genderCategory || undefined,
     battingHand: kiosk.battingStyle === "left_hand" ? "left" : "right",
     recommendationMode: modes,
   };

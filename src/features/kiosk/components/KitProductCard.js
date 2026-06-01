@@ -15,13 +15,13 @@ export function KitProductCard({ product, rankIndex = 0 }) {
   const skin = CARD_SKINS[rankIndex % CARD_SKINS.length];
 
   return (
-    <article className={cn("relative p-4 sm:p-5", skin)}>
+    <article className={cn("kiosk-scroll-section relative p-5 kiosk:p-6", skin)}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1 space-y-1">
-          <p className="font-outfit text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <p className="font-outfit text-sm font-semibold uppercase tracking-wider text-slate-500 kiosk:text-base">
             {product.brand}
           </p>
-          <h3 className="font-sora text-lg font-bold leading-snug text-brand sm:text-xl">
+          <h3 className="font-sora text-xl font-bold leading-snug text-brand kiosk:text-2xl">
             {product.productName}
           </h3>
           {product.shortMarketingDescription ? (

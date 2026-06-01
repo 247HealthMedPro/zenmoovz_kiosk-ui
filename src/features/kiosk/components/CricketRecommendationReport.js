@@ -95,11 +95,11 @@ export function CricketRecommendationReport({ report, onStartAgain }) {
   return (
     <div
       id="cricket-recommendation-report"
-      className="mx-auto max-w-5xl overflow-hidden rounded-kiosk border border-border bg-surface-elevated text-text-primary shadow-kiosk"
+      className="overflow-hidden rounded-2xl border border-border bg-surface-elevated text-text-primary shadow-kiosk"
     >
-      <header className="flex items-center justify-between gap-3 bg-brand px-4 py-3 sm:px-6">
-        <h1 className="font-sora text-lg font-bold tracking-tight text-text-on-brand sm:text-xl">
-          Cricket kit recommendations
+      <header className="flex items-center justify-between gap-3 bg-gradient-to-r from-brand-deep to-brand px-5 py-4 tablet:px-8">
+        <h1 className="font-sora text-lg font-bold tracking-tight text-text-on-brand tablet:text-xl">
+          Your curated kit
         </h1>
         <button
           type="button"

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { FloatingField } from "@/components/ui/FloatingField";
 import { KioskButton } from "@/components/ui/KioskButton";
+import { SendOtpButton, stepActionButtonClass } from "@/components/ui/SendOtpButton";
 import { copy } from "@/lib/constants/kioskCopy";
 import { step1ContinueSchema } from "@/lib/validations/step1UserSchema";
 import { useSendOtpMutation, useVerifyOtpMutation } from "@/redux/api/otpApi";
@@ -22,10 +23,13 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useMotionSafe } from "@/features/kiosk/hooks/useMotionSafe";
 import { OTP_LENGTH } from "@/lib/constants/kioskTheme";
 import {
+  handleMobileKeyDown,
   isValidIndianMobile,
   mobileValidationMessage,
   normalizeMobile,
+  sanitizeMobileInput,
 } from "@/lib/utils/mobileValidation";
+import { cn } from "@/shared/utils/cn";
 
 export function Step1UserForm() {
   const router = useRouter();
@@ -43,6 +47,7 @@ export function Step1UserForm() {
     handleSubmit,
     watch,
     setError,
+    setValue,
     clearErrors,
     trigger,
     formState: { errors },
@@ -96,7 +101,8 @@ export function Step1UserForm() {
       if (!nameValid) setError("name", { message: "Name is required" });
       if (!mobileValid) {
         setError("mobile", {
-          message: mobileValidationMessage(mobileDigits) || "Enter a valid 10-digit mobile number",
+          message:
+            mobileValidationMessage(mobileDigits) || "Enter a valid 10-digit mobile number",
         });
       }
       return;
@@ -137,102 +143,119 @@ export function Step1UserForm() {
   });
 
   return (
-    <form onSubmit={onVerifyAndContinue} className="mx-auto flex max-w-lg flex-col gap-8">
-      <div className="space-y-5">
-        <FloatingField
-          id="name"
-          label="Full name"
-          error={errors.name?.message}
-          autoComplete="name"
-          inputMode="text"
-          {...register("name")}
-        />
-        <FloatingField
-          id="mobile"
-          label="Mobile number"
-          error={errors.mobile?.message || mobileHint}
-          autoComplete="tel"
-          inputMode="numeric"
-          maxLength={14}
-          {...register("mobile", {
-            onChange: () => {
-              setMobileTouched(true);
-              if (auth.otpSent || auth.otpVerified) {
-                dispatch(resetOtpFlow());
-                setOtpValue("");
-              }
-            },
-            onBlur: () => setMobileTouched(true),
-          })}
-        />
-        {mobileValid && !auth.otpSent ? (
-          <p className="text-center text-sm text-accent" role="status">
-            Mobile number looks good — you can send OTP.
-          </p>
-        ) : null}
-      </div>
+    <form onSubmit={onVerifyAndContinue} className="w-full">
+      <section className="ui-card-elevated overflow-hidden px-4 py-4 tablet:px-5 tablet:py-5">
+        <div className="space-y-3">
+          <FloatingField
+            id="name"
+            label="Full name"
+            error={errors.name?.message}
+            autoComplete="name"
+            inputMode="text"
+            inputClassName="min-h-[3.25rem] pt-6 text-base"
+            {...register("name")}
+          />
+          <FloatingField
+            id="mobile"
+            label="Mobile number"
+            error={errors.mobile?.message || mobileHint}
+            success={mobileValid && !errors.mobile && !mobileHint ? true : undefined}
+            autoComplete="tel"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={10}
+            inputClassName="min-h-[3.25rem] pt-6 text-base"
+            {...register("mobile", {
+              onChange: (e) => {
+                const sanitized = sanitizeMobileInput(e.target.value);
+                if (e.target.value !== sanitized) {
+                  e.target.value = sanitized;
+                  setValue("mobile", sanitized, { shouldValidate: true, shouldDirty: true });
+                }
+                setMobileTouched(true);
+                if (auth.otpSent || auth.otpVerified) {
+                  dispatch(resetOtpFlow());
+                  setOtpValue("");
+                }
+              },
+              onKeyDown: handleMobileKeyDown,
+              onPaste: (e) => {
+                e.preventDefault();
+                const pasted = sanitizeMobileInput(e.clipboardData.getData("text"));
+                setValue("mobile", pasted, { shouldValidate: true, shouldDirty: true });
+                setMobileTouched(true);
+                if (auth.otpSent || auth.otpVerified) {
+                  dispatch(resetOtpFlow());
+                  setOtpValue("");
+                }
+              },
+              onBlur: () => setMobileTouched(true),
+            })}
+          />
+        </div>
 
-      <KioskButton
-        type="button"
-        variant="subtle"
-        className="w-full"
-        disabled={!canSendOtp}
-        onClick={onSendOtp}
-      >
-        {sending ? "Sending…" : auth.otpSent ? copy.resendOtp : copy.sendOtp}
-      </KioskButton>
+        <SendOtpButton
+          sent={auth.otpSent}
+          loading={sending}
+          disabled={!canSendOtp}
+          onClick={onSendOtp}
+        />
 
-      <AnimatePresence>
-        {auth.otpSent ? (
-          <motion.div
-            key="otp-flow"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={fade}
-            className="space-y-6 overflow-hidden"
-          >
-            <p
-              role="status"
-              className="rounded-kiosk-sm border border-accent/30 bg-accent/10 px-4 py-3 text-center text-sm font-medium text-brand"
+        <AnimatePresence>
+          {auth.otpSent ? (
+            <motion.div
+              key="otp-flow"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={fade}
+              className="overflow-hidden"
             >
-              {copy.otpSentSuccess}
-            </p>
+              <div className="mt-4 border-t border-border/80 pt-4">
+                <p role="status" className="mb-3 text-center text-xs text-text-muted">
+                  {copy.otpSentSuccess}
+                </p>
+                <OtpSection
+                  value={otpValue}
+                  onChange={(v) => {
+                    setOtpValue(v);
+                    setOtpFieldError(null);
+                    if (auth.otpVerified) dispatch(invalidateOtpVerification());
+                  }}
+                  error={otpFieldError}
+                />
+                <div className="mt-4 flex justify-center">
+                  <KioskButton
+                    type="submit"
+                    variant="primary"
+                    size="md"
+                    className={stepActionButtonClass}
+                    disabled={!canProceed}
+                    loading={verifying}
+                  >
+                    {copy.verifyAndContinue}
+                  </KioskButton>
+                </div>
+              </div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
 
-            <OtpSection
-              value={otpValue}
-              onChange={(v) => {
-                setOtpValue(v);
-                setOtpFieldError(null);
-                if (auth.otpVerified) dispatch(invalidateOtpVerification());
-              }}
-              error={otpFieldError}
-            />
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {auth.errorMessage ? (
-          <motion.p
-            key={auth.errorMessage}
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={fade}
-            className="rounded-kiosk-sm border border-red-200 bg-red-50 px-4 py-3 text-center text-red-700"
-            role="alert"
-          >
-            {auth.errorMessage}
-          </motion.p>
-        ) : null}
-      </AnimatePresence>
-
-      {auth.otpSent ? (
-        <KioskButton type="submit" className="w-full" disabled={!canProceed}>
-          {verifying ? "Checking…" : copy.verifyAndContinue}
-        </KioskButton>
-      ) : null}
+        <AnimatePresence>
+          {auth.errorMessage ? (
+            <motion.p
+              key={auth.errorMessage}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mt-3 rounded-lg border border-error/20 bg-red-50/80 px-3 py-2 text-center text-xs text-error"
+              role="alert"
+            >
+              {auth.errorMessage}
+            </motion.p>
+          ) : null}
+        </AnimatePresence>
+      </section>
     </form>
   );
 }
@@ -250,13 +273,13 @@ function OtpSection({ value, onChange, error }) {
 
   return (
     <div>
-      <p id="otp-label" className="mb-3 text-center text-sm font-medium text-text-muted">
+      <p id="otp-label" className="mb-2 text-center text-xs font-medium text-text-muted">
         Enter {OTP_LENGTH}-digit OTP
       </p>
       <div
         role="group"
         aria-labelledby="otp-label"
-        className="flex justify-center gap-2 sm:gap-3"
+        className="flex justify-center gap-2"
       >
         {digits.map((d, i) => (
           <input
@@ -270,7 +293,7 @@ function OtpSection({ value, onChange, error }) {
             aria-label={`Digit ${i + 1} of ${OTP_LENGTH}`}
             value={d.trim() === "" ? "" : d}
             onChange={(e) => {
-              const c = e.target.value;
+              const c = e.target.value.replace(/\D/g, "");
               setDigit(i, c);
               if (c && i < OTP_LENGTH - 1) refs.current[i + 1]?.focus();
             }}
@@ -279,12 +302,14 @@ function OtpSection({ value, onChange, error }) {
                 refs.current[i - 1]?.focus();
               }
             }}
-            className="h-14 w-12 rounded-kiosk-sm border-2 border-border bg-surface-elevated text-center text-2xl font-semibold text-brand outline-none focus:border-accent sm:h-16 sm:w-14 sm:text-3xl"
+            className={cn(
+              "h-11 w-9 rounded-lg border border-border bg-surface-elevated text-center text-lg font-bold text-brand outline-none focus:border-accent/50"
+            )}
           />
         ))}
       </div>
       {error ? (
-        <p className="mt-2 text-center text-sm text-red-600" role="alert">
+        <p className="mt-2 text-center text-xs text-error" role="alert">
           {error}
         </p>
       ) : null}

@@ -3,8 +3,11 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { FormCard } from "@/components/ui/FormCard";
 import { KioskButton } from "@/components/ui/KioskButton";
+import { KioskSlider } from "@/components/ui/KioskSlider";
+import { SelectionCard } from "@/components/ui/SelectionCard";
+import { IconPerson } from "@/components/ui/icons/SportIcons";
 import { copy } from "@/lib/constants/kioskCopy";
 import { step2PhysicalSchema } from "@/lib/validations/step2PhysicalSchema";
 import { setStep2Data } from "@/api/kioskSlice";
@@ -12,13 +15,12 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   AGE_MAX,
   AGE_MIN,
-  GENDER_CATEGORY,
+  GENDER_SEGMENT_OPTIONS,
   HEIGHT_MAX_CM,
   HEIGHT_MIN_CM,
   WEIGHT_MAX_KG,
   WEIGHT_MIN_KG,
 } from "@/lib/constants/kioskTheme";
-import { cn } from "@/shared/utils/cn";
 
 export function Step2PhysicalForm() {
   const router = useRouter();
@@ -42,6 +44,9 @@ export function Step2PhysicalForm() {
   });
 
   const genderCategory = watch("genderCategory");
+  const age = watch("age");
+  const heightCm = watch("heightCm");
+  const weightKg = watch("weightKg");
 
   const onSubmit = (data) => {
     dispatch(setStep2Data(data));
@@ -49,144 +54,83 @@ export function Step2PhysicalForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="mx-auto flex max-w-lg flex-col gap-10">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex w-full flex-col gap-6 tablet:gap-8">
       <input type="hidden" {...register("genderCategory")} />
 
-      <div role="group" aria-labelledby="gender-heading" className="space-y-4">
-        <h2 id="gender-heading" className="text-center text-lg font-semibold text-brand">
-          Gender
-        </h2>
-        <div className="grid grid-cols-2 gap-4">
-          <SelectCard
-            pressed={genderCategory === GENDER_CATEGORY.MALE}
-            onClick={() => {
-              setValue("genderCategory", GENDER_CATEGORY.MALE, { shouldValidate: true });
-            }}
-            label="Male"
-          />
-          <SelectCard
-            pressed={genderCategory === GENDER_CATEGORY.FEMALE}
-            onClick={() => {
-              setValue("genderCategory", GENDER_CATEGORY.FEMALE, { shouldValidate: true });
-            }}
-            label="Female"
-          />
+      <FormCard title={copy.step2GenderTitle} description={copy.step2GenderSubtitle}>
+        <div className="grid grid-cols-1 gap-3 tablet:grid-cols-2 tablet:gap-4 kiosk:grid-cols-3 kiosk:gap-4">
+          {GENDER_SEGMENT_OPTIONS.map((opt) => (
+            <SelectionCard
+              key={opt.value}
+              icon={IconPerson}
+              title={opt.title}
+              hint={opt.hint}
+              selected={genderCategory === opt.value}
+              onClick={() =>
+                setValue("genderCategory", opt.value, { shouldValidate: true })
+              }
+            />
+          ))}
         </div>
         {errors.genderCategory ? (
-          <p className="text-center text-sm text-red-600">{errors.genderCategory.message}</p>
+          <p className="mt-4 text-center text-sm text-error">{errors.genderCategory.message}</p>
         ) : null}
-      </div>
+      </FormCard>
 
-      <SliderBlock
-        label="Age"
-        suffix="years"
-        name="age"
-        min={AGE_MIN}
-        max={AGE_MAX}
-        register={register}
-        watch={watch}
-        setValue={setValue}
-        error={errors.age?.message}
-      />
+      <FormCard title={copy.step2MeasurementsTitle}>
+        <input type="hidden" {...register("age", { valueAsNumber: true })} />
+        <input type="hidden" {...register("heightCm", { valueAsNumber: true })} />
+        <input type="hidden" {...register("weightKg", { valueAsNumber: true })} />
+        <div className="grid grid-cols-1 gap-4 kiosk:grid-cols-3 kiosk:gap-5">
+          <KioskSlider
+            id="age"
+            label="Age"
+            suffix="years"
+            min={AGE_MIN}
+            max={AGE_MAX}
+            value={Number.isFinite(Number(age)) ? Number(age) : AGE_MIN}
+            onChange={(v) => setValue("age", v, { shouldValidate: true })}
+            onNumberChange={(v) =>
+              setValue("age", Math.min(AGE_MAX, Math.max(AGE_MIN, v)), { shouldValidate: true })
+            }
+            error={errors.age?.message}
+          />
+          <KioskSlider
+            id="height"
+            label="Height"
+            suffix="cm"
+            min={HEIGHT_MIN_CM}
+            max={HEIGHT_MAX_CM}
+            value={Number.isFinite(Number(heightCm)) ? Number(heightCm) : HEIGHT_MIN_CM}
+            onChange={(v) => setValue("heightCm", v, { shouldValidate: true })}
+            onNumberChange={(v) =>
+              setValue("heightCm", Math.min(HEIGHT_MAX_CM, Math.max(HEIGHT_MIN_CM, v)), {
+                shouldValidate: true,
+              })
+            }
+            error={errors.heightCm?.message}
+          />
+          <KioskSlider
+            id="weight"
+            label="Weight"
+            suffix="kg"
+            min={WEIGHT_MIN_KG}
+            max={WEIGHT_MAX_KG}
+            value={Number.isFinite(Number(weightKg)) ? Number(weightKg) : WEIGHT_MIN_KG}
+            onChange={(v) => setValue("weightKg", v, { shouldValidate: true })}
+            onNumberChange={(v) =>
+              setValue("weightKg", Math.min(WEIGHT_MAX_KG, Math.max(WEIGHT_MIN_KG, v)), {
+                shouldValidate: true,
+              })
+            }
+            error={errors.weightKg?.message}
+          />
+        </div>
+      </FormCard>
 
-      <SliderBlock
-        label="Height"
-        suffix="cm"
-        name="heightCm"
-        min={HEIGHT_MIN_CM}
-        max={HEIGHT_MAX_CM}
-        register={register}
-        watch={watch}
-        setValue={setValue}
-        error={errors.heightCm?.message}
-      />
-
-      <SliderBlock
-        label="Weight"
-        suffix="kg"
-        name="weightKg"
-        min={WEIGHT_MIN_KG}
-        max={WEIGHT_MAX_KG}
-        register={register}
-        watch={watch}
-        setValue={setValue}
-        error={errors.weightKg?.message}
-      />
-
-      <KioskButton type="submit" className="w-full">
+      <KioskButton type="submit" size="xl" className="mx-auto w-full max-w-md">
         {copy.continue}
       </KioskButton>
     </form>
-  );
-}
-
-function SelectCard({ pressed, onClick, label }) {
-  return (
-    <motion.button
-      type="button"
-      whileTap={{ scale: 0.98 }}
-      aria-pressed={pressed}
-      onClick={onClick}
-      className={cn(
-        "min-h-24 rounded-kiosk border-2 px-4 py-6 text-xl font-semibold transition sm:min-h-28",
-        pressed
-          ? "border-accent bg-accent/15 text-brand shadow-kiosk-soft"
-          : "border-border bg-surface-elevated text-text-muted hover:border-brand/25"
-      )}
-    >
-      {label}
-    </motion.button>
-  );
-}
-
-function SliderBlock({ label, suffix, name, min, max, register, watch, setValue, error }) {
-  const value = watch(name);
-  const reg = register(name, { valueAsNumber: true });
-  return (
-    <div className="rounded-kiosk border border-border bg-surface-elevated p-5 shadow-kiosk-soft">
-      <div className="mb-3 flex items-end justify-between gap-4">
-        <span className="text-lg font-semibold text-brand">{label}</span>
-        <label className="sr-only" htmlFor={`${name}-num`}>
-          {label} numeric
-        </label>
-        <input
-          id={`${name}-num`}
-          type="number"
-          min={min}
-          max={max}
-          {...reg}
-          onChange={(e) => {
-            reg.onChange(e);
-            const n = Number(e.target.value);
-            if (!Number.isNaN(n)) {
-              setValue(name, Math.min(max, Math.max(min, n)), { shouldValidate: true });
-            }
-          }}
-          className="w-24 rounded-kiosk-sm border border-border bg-surface-subtle px-2 py-2 text-center text-lg font-semibold text-brand outline-none focus:border-accent"
-        />
-        <span className="text-text-muted">{suffix}</span>
-      </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        value={Number.isFinite(Number(value)) ? Number(value) : min}
-        onChange={(e) =>
-          setValue(name, Number(e.target.value), {
-            shouldValidate: true,
-            shouldDirty: true,
-          })
-        }
-        className="h-3 w-full cursor-pointer accent-accent"
-        aria-valuemin={min}
-        aria-valuemax={max}
-        aria-valuenow={Number(value)}
-      />
-      {error ? (
-        <p className="mt-2 text-sm text-red-600" role="alert">
-          {error}
-        </p>
-      ) : null}
-    </div>
   );
 }

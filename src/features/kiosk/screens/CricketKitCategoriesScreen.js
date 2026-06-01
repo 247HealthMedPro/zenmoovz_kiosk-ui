@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { AppShell } from "@/components/ui/KioskShell";
+import { KioskBackLink } from "@/components/ui/KioskBackLink";
 import { KioskButton } from "@/components/ui/KioskButton";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { copy } from "@/lib/constants/kioskCopy";
@@ -25,7 +26,6 @@ export function CricketKitCategoriesScreen() {
   const { spring } = useMotionSafe();
 
   const available = useMemo(() => new Set(apiCategories ?? []), [apiCategories]);
-
   const [selected, setSelected] = useState(() => new Set(saved));
 
   useEffect(() => {
@@ -80,133 +80,129 @@ export function CricketKitCategoriesScreen() {
   const count = selected.size;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={spring}
-      className="mx-auto flex min-h-dvh max-w-3xl flex-col px-4 py-8 sm:px-8"
-    >
-      <header className="space-y-3 text-center">
-        <div className="flex items-center justify-between gap-4">
-          <Link
-            href="/kiosk/categories"
-            className="min-h-[44px] rounded-kiosk-sm border border-border bg-surface-elevated px-3 py-2 text-sm text-text-muted shadow-kiosk-soft hover:border-brand/25 hover:text-brand"
-          >
-            ← Sports
-          </Link>
-          <p className="text-xs font-semibold uppercase tracking-widest text-accent">Cricket</p>
-          <span className="w-[72px]" aria-hidden />
-        </div>
-        <h1 className="font-sora text-4xl text-brand sm:text-5xl">{copy.kitCategoriesTitle}</h1>
-        <p className="text-lg text-text-muted">{copy.kitCategoriesSubtitle}</p>
-      </header>
-
-      <main className="mt-8 flex-1 space-y-8 pb-32">
-        {isLoading ? (
-          <motion.div className="space-y-4">
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-24 w-full" />
-            <p className="text-center text-sm text-text-muted">{copy.kitCategoriesLoading}</p>
-          </motion.div>
-        ) : isError || !apiCategories?.length ? (
-          <motion.div className="rounded-kiosk border border-red-200 bg-red-50 p-6 text-center">
-            <p className="font-outfit text-sm text-red-800">{copy.kitCategoriesError}</p>
-            <KioskButton type="button" className="mt-4" onClick={() => refetch()}>
-              {copy.tryAgain}
-            </KioskButton>
-          </motion.div>
-        ) : (
-          <>
-            {groups.map((group) => (
-              <CategoryGroup
-                key={group.id}
-                group={group}
-                selected={selected}
-                onToggle={toggle}
-                onSelectAll={() => setGroup(group.categories, true)}
-                onClear={() => setGroup(group.categories, false)}
-              />
-            ))}
-            {uncategorized.length > 0 ? (
-              <CategoryGroup
-                group={{
-                  id: "other",
-                  title: "More gear",
-                  description: "Additional categories",
-                  categories: uncategorized,
-                }}
-                selected={selected}
-                onToggle={toggle}
-                onSelectAll={() => setGroup(uncategorized, true)}
-                onClear={() => setGroup(uncategorized, false)}
-              />
-            ) : null}
-          </>
-        )}
-      </main>
-
-      <footer className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-surface/95 px-4 py-4 backdrop-blur-md sm:px-8">
-        <motion.div className="mx-auto flex max-w-3xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-center font-outfit text-sm text-text-muted sm:text-left">
-            <span className="font-semibold text-brand">{count}</span> {copy.kitCategoriesSelected}
-            {count === 0 ? (
-              <span className="block text-red-600">{copy.kitCategoriesSelectOne}</span>
-            ) : null}
+    <div className="min-h-dvh bg-gradient-to-b from-surface to-surface-subtle">
+      <AppShell
+        as={motion.div}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={spring}
+        className="pb-36 kiosk:pb-40"
+      >
+        <header className="space-y-4 py-8 text-center tablet:space-y-5 kiosk:py-10">
+          <div className="flex items-center justify-between gap-4">
+            <KioskBackLink href="/kiosk/categories">← Sports</KioskBackLink>
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-accent tablet:text-sm">
+              Cricket
+            </span>
+            <span className="w-[5.5rem] tablet:w-[6.5rem]" aria-hidden />
+          </div>
+          <h1 className="text-display">{copy.kitCategoriesTitle}</h1>
+          <p className="mx-auto max-w-2xl text-lg text-text-muted tablet:text-xl">
+            {copy.kitCategoriesSubtitle}
           </p>
-          <KioskButton
-            type="button"
-            className="w-full sm:min-w-[240px] sm:w-auto"
-            disabled={count === 0 || isLoading}
-            onClick={onContinue}
-          >
-            {copy.kitCategoriesContinue}
-          </KioskButton>
-        </motion.div>
-      </footer>
-    </motion.div>
+        </header>
+
+        <main className="space-y-6 tablet:space-y-8 kiosk:grid kiosk:grid-cols-2 kiosk:gap-8 kiosk:space-y-0">
+          {isLoading ? (
+            <div className="kiosk:col-span-2 space-y-4">
+              <Skeleton className="h-28 w-full rounded-2xl" />
+              <Skeleton className="h-28 w-full rounded-2xl" />
+              <p className="text-center text-text-muted">{copy.kitCategoriesLoading}</p>
+            </div>
+          ) : isError || !apiCategories?.length ? (
+            <div className="kiosk:col-span-2 ui-card-elevated p-8 text-center">
+              <p className="text-error">{copy.kitCategoriesError}</p>
+              <KioskButton type="button" className="mt-4" onClick={() => refetch()}>
+                {copy.tryAgain}
+              </KioskButton>
+            </div>
+          ) : (
+            <>
+              {groups.map((group) => (
+                <CategoryGroup
+                  key={group.id}
+                  group={group}
+                  selected={selected}
+                  onToggle={toggle}
+                  onSelectAll={() => setGroup(group.categories, true)}
+                  onClear={() => setGroup(group.categories, false)}
+                />
+              ))}
+              {uncategorized.length > 0 ? (
+                <CategoryGroup
+                  group={{
+                    id: "other",
+                    title: "More gear",
+                    description: "Additional categories",
+                    categories: uncategorized,
+                  }}
+                  selected={selected}
+                  onToggle={toggle}
+                  onSelectAll={() => setGroup(uncategorized, true)}
+                  onClear={() => setGroup(uncategorized, false)}
+                />
+              ) : null}
+            </>
+          )}
+        </main>
+
+        <footer className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-surface-elevated/98 shadow-kiosk">
+          <div className="app-shell flex flex-col gap-4 py-5 tablet:flex-row tablet:items-center tablet:justify-between">
+            <p className="text-center text-base text-text-muted tablet:text-left">
+              <span className="font-semibold text-brand">{count}</span> {copy.kitCategoriesSelected}
+              {count === 0 ? (
+                <span className="mt-1 block text-error">{copy.kitCategoriesSelectOne}</span>
+              ) : null}
+            </p>
+            <KioskButton
+              type="button"
+              size="xl"
+              className="w-full tablet:min-w-[280px] tablet:w-auto"
+              disabled={count === 0 || isLoading}
+              onClick={onContinue}
+            >
+              {copy.kitCategoriesContinue}
+            </KioskButton>
+          </div>
+        </footer>
+      </AppShell>
+    </div>
   );
 }
 
 function CategoryGroup({ group, selected, onToggle, onSelectAll, onClear }) {
   const allOn = group.categories.every((c) => selected.has(c));
   return (
-    <section className="rounded-kiosk border border-border bg-surface-elevated p-4 shadow-kiosk-soft sm:p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <section className="ui-card-elevated p-5 tablet:p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h2 className="font-sora text-lg font-bold text-brand">{group.title}</h2>
-          <p className="font-outfit text-xs text-text-muted">{group.description}</p>
+          <h2 className="font-sora text-xl font-bold text-brand">{group.title}</h2>
+          <p className="mt-1 text-sm text-text-muted">{group.description}</p>
         </div>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={allOn ? onClear : onSelectAll}
-            className="min-h-10 rounded-kiosk-sm border border-border px-3 text-xs font-semibold text-brand hover:bg-surface-subtle"
-          >
-            {allOn ? copy.kitCategoriesClear : copy.kitCategoriesSelectAll}
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={allOn ? onClear : onSelectAll}
+          className="kiosk-touch rounded-xl border-2 border-border px-4 text-sm font-semibold text-brand hover:bg-surface-subtle"
+        >
+          {allOn ? copy.kitCategoriesClear : copy.kitCategoriesSelectAll}
+        </button>
       </div>
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-5 flex flex-wrap gap-3">
         {group.categories.map((code) => {
           const on = selected.has(code);
           return (
-            <motion.button
+            <button
               key={code}
               type="button"
-              layout
-              whileTap={{ scale: 0.97 }}
               aria-pressed={on}
               onClick={() => onToggle(code)}
               className={cn(
-                "min-h-11 rounded-full border-2 px-4 py-2 font-outfit text-sm font-semibold transition",
-                on
-                  ? "border-accent bg-gradient-to-br from-accent/20 to-brand-soft text-brand shadow-kiosk-soft"
-                  : "border-border bg-surface text-text-muted hover:border-brand/30"
+                "kiosk-touch rounded-full border-2 px-5 text-sm font-semibold transition active:scale-[0.98] tablet:text-base",
+                on ? "ui-card-selected border-accent" : "border-border bg-surface text-text-muted"
               )}
             >
               {formatCategoryLabel(code)}
-            </motion.button>
+            </button>
           );
         })}
       </div>

@@ -170,7 +170,7 @@ export function BatRecommendationCard({ rec, brand }) {
               <button
                 type="button"
                 onClick={() => setGuideOpen(true)}
-                className="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-border bg-surface text-brand shadow-kiosk-soft transition hover:border-amber-400 hover:bg-amber-50 hover:text-amber-900"
+                className="kiosk-touch flex items-center justify-center rounded-full border-2 border-border bg-surface text-brand shadow-kiosk-soft transition hover:border-amber-400 hover:bg-amber-50 hover:text-amber-900"
                 aria-label={copy.batKnockingGuide}
               >
                 <IconKnockingGuide />
@@ -179,7 +179,7 @@ export function BatRecommendationCard({ rec, brand }) {
             <button
               type="button"
               onClick={() => setDetailsOpen(true)}
-              className="flex min-h-11 min-w-11 items-center justify-center rounded-full border border-border bg-surface text-brand shadow-kiosk-soft transition hover:border-accent hover:bg-brand-soft hover:text-accent"
+              className="kiosk-touch flex items-center justify-center rounded-full border-2 border-border bg-surface text-brand shadow-kiosk-soft transition hover:border-accent hover:bg-brand-soft hover:text-accent"
               aria-label={copy.viewDetails}
             >
               <IconInfo />
@@ -212,7 +212,7 @@ export function BatRecommendationCard({ rec, brand }) {
           <button
             type="button"
             onClick={() => setDetailsOpen(true)}
-            className="font-outfit flex min-h-11 w-full items-center justify-center gap-2 rounded-kiosk-sm border border-border bg-surface-subtle text-sm font-semibold text-brand transition hover:border-brand/30 hover:bg-brand-soft"
+            className="font-outfit kiosk-touch flex w-full items-center justify-center gap-3 rounded-kiosk border-2 border-border bg-surface-subtle text-base font-semibold text-brand transition hover:border-brand/30 hover:bg-brand-soft kiosk:text-lg"
           >
             <IconInfo />
             {copy.viewDetails}
@@ -221,7 +221,7 @@ export function BatRecommendationCard({ rec, brand }) {
             <button
               type="button"
               onClick={() => setGuideOpen(true)}
-              className="font-outfit flex min-h-11 w-full items-center justify-center gap-2 rounded-kiosk-sm border border-amber-200 bg-amber-50/80 text-sm font-semibold text-amber-950 transition hover:border-amber-300 hover:bg-amber-100"
+              className="font-outfit kiosk-touch flex w-full items-center justify-center gap-3 rounded-kiosk border-2 border-amber-200 bg-amber-50/80 text-base font-semibold text-amber-950 transition hover:border-amber-300 hover:bg-amber-100 kiosk:text-lg"
             >
               <IconKnockingGuide />
               {copy.batKnockingGuide}

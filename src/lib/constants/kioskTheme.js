@@ -1,7 +1,8 @@
-/** Brand & kiosk tuning — avoid magic numbers in UI */
-export const BRAND_HEX = "#16304A";
+/** Brand & domain constants */
+export const BRAND_HEX = "#16304a";
 
-/** Mock OTP for QA (matches RTK verifyOtp mock) */
+export { KIOSK_VIEWPORT, TOUCH_MIN_PX, TOUCH_COMFORT_PX } from "@/lib/constants/kioskDesign";
+
 export const MOCK_VERIFY_OTP = "123456";
 
 export const MOBILE_DIGITS = 10;
@@ -14,10 +15,36 @@ export const HEIGHT_MAX_CM = 220;
 export const WEIGHT_MIN_KG = 25;
 export const WEIGHT_MAX_KG = 200;
 
+/** @deprecated use GENDER_SEGMENT — kept for API gender mapping */
 export const GENDER_CATEGORY = {
   MALE: "male",
   FEMALE: "female",
 };
+
+/** Step 2 profile segments */
+export const GENDER_SEGMENT = {
+  JUNIOR_BOY: "junior_boy",
+  YOUTH_BOY: "youth_boy",
+  MAN: "man",
+  JUNIOR_GIRL: "junior_girl",
+  YOUTH_GIRL: "youth_girl",
+  WOMAN: "woman",
+};
+
+export const GENDER_SEGMENT_OPTIONS = [
+  { value: GENDER_SEGMENT.JUNIOR_BOY, title: "Junior Boy", hint: "0–12 years", group: "male" },
+  { value: GENDER_SEGMENT.YOUTH_BOY, title: "Youth Boy", hint: "13–18 years", group: "male" },
+  { value: GENDER_SEGMENT.MAN, title: "Man", hint: "18+ years", group: "male" },
+  { value: GENDER_SEGMENT.JUNIOR_GIRL, title: "Junior Girl", hint: "0–12 years", group: "female" },
+  { value: GENDER_SEGMENT.YOUTH_GIRL, title: "Youth Girl", hint: "13–18 years", group: "female" },
+  { value: GENDER_SEGMENT.WOMAN, title: "Woman", hint: "18+ years", group: "female" },
+];
+
+export function isFemaleSegment(segment) {
+  return [GENDER_SEGMENT.JUNIOR_GIRL, GENDER_SEGMENT.YOUTH_GIRL, GENDER_SEGMENT.WOMAN].includes(
+    segment
+  );
+}
 
 export const PLAYING_LEVEL = {
   BEGINNER: "beginner",
@@ -38,7 +65,6 @@ export const WILLOW_TYPE = {
   PRACTICE_COMPOSITE: "practice_composite",
 };
 
-/** Ball type when Kashmir Willow is selected (step 3) */
 export const BALL_TYPE = {
   SOFT_TENNIS: "soft_tennis_ball",
   HARD_TENNIS: "hard_tennis_ball",
@@ -46,7 +72,6 @@ export const BALL_TYPE = {
   LEATHER: "leather_ball",
 };
 
-/** Batting order / position in the line-up */
 export const BATTING_POSITION = {
   OPENER: "opener",
   TOP_ORDER: "top_order",

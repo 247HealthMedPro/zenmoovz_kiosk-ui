@@ -1,18 +1,19 @@
 "use client";
 
-import { CricketWizardShell } from "@/features/kiosk/components/CricketWizardShell";
+import { WizardLayout } from "@/components/layout/WizardLayout";
 import { Step3PlayingForm } from "@/features/kiosk/components/Step3PlayingForm";
 import { useCricketStepGuard } from "@/features/kiosk/hooks/useCricketStepGuard";
+import { copy } from "@/lib/constants/kioskCopy";
 
 export default function CricketStep3Page() {
   useCricketStepGuard(3);
   return (
-    <CricketWizardShell
-      compact
-      title="Step 3 — Playing style"
-      subtitle="Level, batting position, hand, and willow."
+    <WizardLayout
+      step={3}
+      title={copy.step3Title}
+      subtitle={copy.step3Subtitle}
     >
       <Step3PlayingForm />
-    </CricketWizardShell>
+    </WizardLayout>
   );
 }

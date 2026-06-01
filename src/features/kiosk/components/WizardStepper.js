@@ -28,15 +28,15 @@ export function WizardStepper() {
 
   return (
     <nav aria-label="Cricket wizard progress" className="w-full">
-      <ol className="flex flex-wrap items-center justify-center gap-3 sm:gap-6">
+      <ol className="flex flex-wrap items-center justify-center gap-3 kiosk:gap-5">
         {STEPS.map((s) => {
           const active = s.n === current;
           const done = s.n < current;
           const accessible = canAccessStep(s.n, auth, kiosk);
 
           const className = cn(
-            "flex min-h-[48px] min-w-[48px] items-center justify-center rounded-full border-2 px-4 text-sm font-semibold transition sm:min-w-0 sm:px-5 sm:text-base",
-            active && "border-accent bg-accent/15 text-brand",
+            "kiosk-touch flex items-center justify-center rounded-full border-2 px-5 text-base font-semibold transition kiosk:px-7 kiosk:text-lg",
+            active && "border-accent bg-accent/15 text-brand shadow-kiosk-soft",
             done && accessible && "border-brand/40 bg-brand-soft text-brand",
             !active && !done && accessible && "border-border bg-surface-elevated text-text-muted",
             !accessible && "cursor-not-allowed border-border/80 bg-surface-subtle text-text-muted/60"

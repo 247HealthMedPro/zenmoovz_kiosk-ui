@@ -4,9 +4,11 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { AppShell } from "@/components/ui/KioskShell";
 import { CricketRecommendationReport } from "@/features/kiosk/components/CricketRecommendationReport";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { KioskButton } from "@/components/ui/KioskButton";
+import { copy } from "@/lib/constants/kioskCopy";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { resetCricketFlow } from "@/api/kioskSlice";
 import { resetOtpFlow } from "@/api/authSlice";
@@ -34,27 +36,47 @@ export function RecommendationScreen() {
   };
 
   return (
-    <div className="min-h-dvh bg-surface px-3 py-6 sm:px-6 sm:py-10">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={spring}
-        className="mx-auto max-w-5xl"
-      >
-        {status === "loading" || (kiosk.wizardCompleted && !report && status !== "error") ? (
-          <motion.div className="space-y-4 rounded-kiosk border border-border bg-surface-elevated p-6 shadow-kiosk">
-            <Skeleton className="h-14 w-full" />
-            <Skeleton className="h-40 w-full" />
-            <Skeleton className="h-64 w-full" />
-            <p className="text-center font-outfit text-sm text-text-muted">
-              {status === "loading" ? "Loading recommendations…" : "Almost there…"}
+    <div className="min-h-dvh bg-surface">
+      <div className="recommendation-hero text-center text-text-on-dark">
+        <AppShell className="min-h-0 items-center py-3 tablet:py-3.5">
+          <motion.div
+            className="flex flex-col gap-1"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={spring}
+          >
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent-muted tablet:text-sm">
+              Personalised for you
+            </p>
+            <h1 className="font-sora text-2xl font-semibold leading-tight tablet:text-3xl kiosk:text-4xl">
+              {copy.recommendationTitle}
+            </h1>
+            <p className="mx-auto max-w-2xl text-sm leading-snug text-text-on-dark/80 tablet:text-base">
+              {copy.recommendationSubtitle}
             </p>
           </motion.div>
+        </AppShell>
+      </div>
+
+      <AppShell
+        as={motion.div}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ ...spring, delay: 0.1 }}
+        className="min-h-0 -mt-2 gap-0 pb-12 pt-0"
+      >
+        {status === "loading" || (kiosk.wizardCompleted && !report && status !== "error") ? (
+          <div className="ui-card-elevated space-y-4 p-8">
+            <Skeleton className="h-14 w-full rounded-xl" />
+            <Skeleton className="h-48 w-full rounded-xl" />
+            <Skeleton className="h-64 w-full rounded-xl" />
+            <p className="text-center text-text-muted">Loading recommendations…</p>
+          </div>
         ) : status === "error" && !report ? (
-          <motion.div className="rounded-kiosk border border-red-200 bg-red-50 p-8 text-center">
-            <p className="font-sora text-lg font-semibold text-brand">Could not show recommendations</p>
-            <p className="font-outfit mt-2 text-sm text-text-muted">{error}</p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <div className="ui-card-elevated p-10 text-center">
+            <p className="text-headline text-xl">Could not show recommendations</p>
+            <p className="mt-2 text-text-muted">{error}</p>
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link href="/kiosk/cricket/step-3">
                 <KioskButton type="button">Try again</KioskButton>
               </Link>
@@ -62,18 +84,18 @@ export function RecommendationScreen() {
                 Start over
               </KioskButton>
             </div>
-          </motion.div>
+          </div>
         ) : report ? (
           <CricketRecommendationReport report={report} onStartAgain={onStartAgain} />
         ) : (
-          <motion.div className="rounded-kiosk border border-border bg-surface-elevated p-8 text-center shadow-kiosk-soft">
-            <p className="font-outfit text-text-muted">No report data. Complete the wizard from step 1.</p>
-            <Link href="/kiosk/cricket/step-1" className="mt-4 inline-block text-brand underline">
-              Go to step 1
+          <div className="ui-card-elevated p-10 text-center">
+            <p className="text-text-muted">No report data. Complete the wizard from step 1.</p>
+            <Link href="/kiosk/cricket/step-1" className="mt-4 inline-block font-semibold text-accent">
+              Go to step 1 →
             </Link>
-          </motion.div>
+          </div>
         )}
-      </motion.div>
+      </AppShell>
     </div>
   );
 }

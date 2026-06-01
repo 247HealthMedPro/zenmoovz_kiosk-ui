@@ -1,8 +1,6 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { KioskButton } from "@/components/ui/KioskButton";
 import { copy } from "@/lib/constants/kioskCopy";
 import { cn } from "@/shared/utils/cn";
 
@@ -32,38 +30,8 @@ function IconCompress({ className }) {
   );
 }
 
-function IconArrowRight({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden>
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-    </svg>
-  );
-}
-
 const topChipClass =
-  "font-outfit z-50 flex min-h-11 min-w-[11rem] items-center justify-center gap-2 rounded-full border border-border bg-surface-elevated/95 px-4 py-2.5 text-sm font-semibold text-brand shadow-kiosk-soft backdrop-blur-md transition hover:border-brand/25 hover:bg-surface-elevated focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
-
-export function LandingActionDock({ className }) {
-  return (
-    <motion.div
-      className={cn("w-full max-w-md", className)}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-    >
-      <motion.div
-        className="rounded-kiosk border border-border bg-surface-elevated/95 p-3 shadow-kiosk backdrop-blur-xl sm:p-4"
-        layout
-      >
-        <Link href="/kiosk/categories" className="block" onClick={(e) => e.stopPropagation()}>
-          <KioskButton className="group w-full min-h-[3.75rem] gap-3 text-base shadow-kiosk-soft sm:min-h-[4rem] sm:text-lg">
-            <span>{copy.startExperience}</span>
-            <IconArrowRight className="h-5 w-5 transition group-hover:translate-x-0.5" />
-          </KioskButton>
-        </Link>
-      </motion.div>
-    </motion.div>
-  );
-}
+  "kiosk-touch flex items-center justify-center gap-2.5 rounded-full border border-white/30 bg-brand-deep/80 px-5 text-sm font-semibold text-text-on-dark shadow-kiosk backdrop-blur-md transition hover:bg-brand-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 export function FullscreenTopControl({ isFullscreen, onEnter, onExit, className }) {
   if (isFullscreen) {
@@ -72,8 +40,7 @@ export function FullscreenTopControl({ isFullscreen, onEnter, onExit, className 
         type="button"
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
-        className={cn(topChipClass, "border-accent/40 text-accent", className)}
+        className={cn(topChipClass, "border-accent/50", className)}
         onClick={(e) => {
           e.stopPropagation();
           onExit();
@@ -91,7 +58,6 @@ export function FullscreenTopControl({ isFullscreen, onEnter, onExit, className 
       type="button"
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
       className={cn(topChipClass, className)}
       onClick={(e) => {
         e.stopPropagation();
@@ -103,4 +69,9 @@ export function FullscreenTopControl({ isFullscreen, onEnter, onExit, className 
       {copy.fullscreen}
     </motion.button>
   );
+}
+
+/** @deprecated Landing embeds CTA directly */
+export function LandingActionDock() {
+  return null;
 }

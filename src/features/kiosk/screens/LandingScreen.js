@@ -1,18 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  FullscreenTopControl,
-  LandingActionDock,
-} from "@/features/kiosk/components/LandingActionDock";
+import { KioskButton } from "@/components/ui/KioskButton";
+import { FullscreenTopControl } from "@/features/kiosk/components/LandingActionDock";
+import { copy } from "@/lib/constants/kioskCopy";
 import { useMotionSafe } from "@/features/kiosk/hooks/useMotionSafe";
 import { useFullscreenKiosk } from "@/features/kiosk/hooks/useFullscreenKiosk";
 
 const DEFAULT_LOGO_VIDEO = "/videos/logo-animation.webm";
 
+function IconArrowRight({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+    </svg>
+  );
+}
+
 export function LandingScreen() {
-  const brand = process.env.NEXT_PUBLIC_BRAND_NAME || "ZenMoovz";
   const videoSrc =
     process.env.NEXT_PUBLIC_LOGO_VIDEO_SRC?.trim() ||
     process.env.NEXT_PUBLIC_LANDING_VIDEO_URL?.trim() ||
@@ -26,7 +33,7 @@ export function LandingScreen() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={fade}
-      className="relative min-h-dvh w-full overflow-hidden bg-surface"
+      className="relative min-h-dvh w-full overflow-hidden bg-surface-dark"
     >
       {videoOk ? (
         <video
@@ -35,45 +42,38 @@ export function LandingScreen() {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           aria-hidden
           onError={() => setVideoOk(false)}
         >
           <source src={videoSrc} type="video/webm" />
         </video>
       ) : (
-        <motion.div
-          className="absolute inset-0 flex items-center justify-center bg-surface-subtle"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          <p className="font-sora text-4xl tracking-[0.15em] text-brand sm:text-6xl">{brand}</p>
-        </motion.div>
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-deep via-brand to-brand-light" aria-hidden />
       )}
 
-      <motion.div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-surface/95 via-surface/20 to-transparent"
-        aria-hidden
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ ...fade, delay: reduced ? 0 : 0.1 }}
-      />
+      <div className="hero-overlay pointer-events-none absolute inset-0" aria-hidden />
 
       <FullscreenTopControl
         key={isFullscreen ? "minimize" : "fullscreen"}
         isFullscreen={isFullscreen}
         onEnter={enterFullscreen}
         onExit={exitFullscreen}
-        className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] z-30"
+        className="absolute right-[var(--gutter)] top-[max(1rem,env(safe-area-inset-top))] z-30"
       />
 
       <motion.div
-        className="absolute inset-x-0 bottom-0 z-20 flex justify-center px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-20 sm:px-8"
-        initial={{ opacity: 0, y: 28 }}
+        className="absolute inset-x-0 bottom-0 z-10 flex justify-center px-[var(--gutter)] pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-24"
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ ...spring, delay: reduced ? 0 : 0.15 }}
       >
-        <LandingActionDock />
+        <Link href="/kiosk/categories" className="block w-full max-w-md tablet:max-w-lg">
+          <KioskButton size="xl" className="group w-full gap-4 shadow-kiosk">
+            <span>{copy.startExperience}</span>
+            <IconArrowRight className="h-6 w-6 transition group-hover:translate-x-1" />
+          </KioskButton>
+        </Link>
       </motion.div>
     </motion.div>
   );
