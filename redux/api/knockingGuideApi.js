@@ -1,12 +1,15 @@
-import { baseApi } from "./baseApi";
+import { apiSlice } from "./apiSlice";
 
 function knockingGuidePath(productCode) {
   return `/api/kiosk/guide/knocking/${encodeURIComponent(String(productCode))}`;
 }
 
-export const knockingGuideApi = baseApi.injectEndpoints({
+export const knockingGuideApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
     getKnockingGuide: build.query({
+      providesTags: (_result, _error, productCode) => [
+        { type: "KnockingGuide", id: productCode },
+      ],
       async queryFn(productCode, _api, _extraOptions, baseQuery) {
         const code = String(productCode || "").trim();
         if (!code) {

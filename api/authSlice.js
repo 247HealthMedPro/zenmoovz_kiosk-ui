@@ -8,7 +8,7 @@ const initialState = {
   errorMessage: null,
 };
 
-const authSlice = createSlice({
+export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
@@ -42,4 +42,8 @@ export const {
   otpError,
   invalidateOtpVerification,
 } = authSlice.actions;
+
+export const selectAuth = (state) => state.auth;
+export const selectOtpVerified = (state) => state.auth.otpVerified;
+
 export default authSlice.reducer;

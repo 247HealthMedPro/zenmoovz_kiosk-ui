@@ -8,10 +8,10 @@ import { motion } from "framer-motion";
 import { KioskButton } from "@/components/ui/KioskButton";
 import { copy } from "@/lib/constants/kioskCopy";
 import { createStep3PlayingSchema } from "@/lib/validations/step3PlayingSchema";
-import { setStep3Data, setWizardCompleted } from "@/lib/store/slices/kioskSlice";
-import { setLoading, setReport, setFailure } from "@/lib/store/slices/recommendationSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { usePostBatsRecommendationsMutation } from "@/lib/store/api/recommendationApi";
+import { setStep3Data, setWizardCompleted } from "@/api/kioskSlice";
+import { setLoading, setReport, setFailure } from "@/api/recommendationSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { usePostBatsRecommendationsMutation } from "@/redux/api/recommendationApi";
 import { buildRecommendationPayload } from "@/lib/utils/recommendationPayload";
 import {
   BALL_TYPE,

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/shared/utils/cn";
 import { copy } from "@/lib/constants/kioskCopy";
-import { useAppSelector } from "@/lib/store/hooks";
+import { useAppSelector } from "@/redux/hooks";
 
 const STEPS = [
   { n: 1, href: "/kiosk/cricket/step-1", label: copy.stepUser },

@@ -7,7 +7,7 @@ const initialState = {
   status: "idle",
 };
 
-const recommendationSlice = createSlice({
+export const recommendationSlice = createSlice({
   name: "recommendation",
   initialState,
   reducers: {
@@ -34,4 +34,7 @@ const recommendationSlice = createSlice({
 
 export const { setLoading, setReport, setFailure, resetRecommendations } =
   recommendationSlice.actions;
+
+export const selectRecommendation = (state) => state.recommendation;
+
 export default recommendationSlice.reducer;

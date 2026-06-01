@@ -9,16 +9,16 @@ import { FloatingField } from "@/components/ui/FloatingField";
 import { KioskButton } from "@/components/ui/KioskButton";
 import { copy } from "@/lib/constants/kioskCopy";
 import { step1ContinueSchema } from "@/lib/validations/step1UserSchema";
-import { useSendOtpMutation, useVerifyOtpMutation } from "@/lib/store/api/otpApi";
+import { useSendOtpMutation, useVerifyOtpMutation } from "@/redux/api/otpApi";
 import {
   otpError,
   otpSendSuccess,
   otpVerifySuccess,
   resetOtpFlow,
   invalidateOtpVerification,
-} from "@/lib/store/slices/authSlice";
-import { setStep1Data } from "@/lib/store/slices/kioskSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+} from "@/api/authSlice";
+import { setStep1Data } from "@/api/kioskSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useMotionSafe } from "@/features/kiosk/hooks/useMotionSafe";
 import { OTP_LENGTH } from "@/lib/constants/kioskTheme";
 import {

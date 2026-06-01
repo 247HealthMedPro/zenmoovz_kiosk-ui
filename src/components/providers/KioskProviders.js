@@ -1,6 +1,6 @@
 "use client";
 
-import { StoreProvider } from "./StoreProvider";
+import StoreProvider from "./StoreProvider";
 import { ServiceWorkerRegister } from "./ServiceWorkerRegister";
 
 export function KioskProviders({ children }) {

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { KioskButton } from "@/components/ui/KioskButton";
-import { useGetKnockingGuideQuery } from "@/lib/store/api/knockingGuideApi";
+import { useGetKnockingGuideQuery } from "@/redux/api/knockingGuideApi";
 import { copy } from "@/lib/constants/kioskCopy";
 import { cn } from "@/shared/utils/cn";
 

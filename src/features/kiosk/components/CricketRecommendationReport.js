@@ -21,7 +21,7 @@ import {
 import { KitCategorySection } from "@/features/kiosk/components/KitCategorySection";
 import { KitDerivedProfileSection } from "@/features/kiosk/components/KitDerivedProfileSection";
 import { useMotionSafe } from "@/features/kiosk/hooks/useMotionSafe";
-import { useAppSelector } from "@/lib/store/hooks";
+import { useAppSelector } from "@/redux/hooks";
 import { formatCategoryLabel } from "@/lib/utils/kitCategoryFormat";
 import {
   normalizeRecommendationReport,

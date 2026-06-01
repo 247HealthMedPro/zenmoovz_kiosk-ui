@@ -7,9 +7,9 @@ import { motion } from "framer-motion";
 import { KioskButton } from "@/components/ui/KioskButton";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { copy } from "@/lib/constants/kioskCopy";
-import { useGetRecommendationCategoriesQuery } from "@/lib/store/api/categoriesApi";
-import { setRecommendationMode } from "@/lib/store/slices/kioskSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { useGetRecommendationCategoriesQuery } from "@/redux/api/categoriesApi";
+import { setRecommendationMode } from "@/api/kioskSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useMotionSafe } from "@/features/kiosk/hooks/useMotionSafe";
 import {
   formatCategoryLabel,

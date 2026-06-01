@@ -1,10 +1,11 @@
-import { baseApi } from "./baseApi";
+import { apiSlice } from "./apiSlice";
 
 const CATEGORIES_PATH = "/api/kiosk/recommendations/categories";
 
-export const categoriesApi = baseApi.injectEndpoints({
+export const categoriesApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
     getRecommendationCategories: build.query({
+      providesTags: ["Category"],
       async queryFn(_arg, _api, _extraOptions, baseQuery) {
         const result = await baseQuery({
           url: CATEGORIES_PATH,

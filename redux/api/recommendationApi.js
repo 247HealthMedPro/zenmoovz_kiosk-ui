@@ -1,8 +1,8 @@
-import { baseApi } from "./baseApi";
+import { apiSlice } from "./apiSlice";
 
 const BATS_PATH = "/api/kiosk/recommendations/bats";
 
-export const recommendationApi = baseApi.injectEndpoints({
+export const recommendationApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
     postBatsRecommendations: build.mutation({
       invalidatesTags: ["Recommendation"],
@@ -21,7 +21,8 @@ export const recommendationApi = baseApi.injectEndpoints({
             error: {
               status: 422,
               data: {
-                message: json?.message || "Recommendations could not be loaded.",
+                message:
+                  json?.message || "Recommendations could not be loaded.",
               },
             },
           };

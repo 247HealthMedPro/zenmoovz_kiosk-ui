@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 
-/** @typedef {ReturnType<import('./index').makeStore>} AppStore */
+/** @typedef {ReturnType<import('./store').makeStore>} AppStore */
 /** @typedef {ReturnType<AppStore['getState']>} RootState */
 /** @typedef {AppStore['dispatch']} AppDispatch */
 

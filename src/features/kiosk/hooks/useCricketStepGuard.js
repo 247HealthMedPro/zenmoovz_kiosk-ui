@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAppSelector } from "@/lib/store/hooks";
+import { useAppSelector } from "@/redux/hooks";
 
 export function useCricketStepGuard(requiredStep) {
   const router = useRouter();

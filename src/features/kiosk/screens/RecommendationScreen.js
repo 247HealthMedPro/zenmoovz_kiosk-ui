@@ -7,10 +7,10 @@ import { motion } from "framer-motion";
 import { CricketRecommendationReport } from "@/features/kiosk/components/CricketRecommendationReport";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { KioskButton } from "@/components/ui/KioskButton";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
-import { resetCricketFlow } from "@/lib/store/slices/kioskSlice";
-import { resetOtpFlow } from "@/lib/store/slices/authSlice";
-import { resetRecommendations } from "@/lib/store/slices/recommendationSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { resetCricketFlow } from "@/api/kioskSlice";
+import { resetOtpFlow } from "@/api/authSlice";
+import { resetRecommendations } from "@/api/recommendationSlice";
 import { useMotionSafe } from "@/features/kiosk/hooks/useMotionSafe";
 
 export function RecommendationScreen() {

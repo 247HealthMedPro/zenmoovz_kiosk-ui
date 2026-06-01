@@ -1,9 +1,9 @@
 import { MOCK_VERIFY_OTP, MOBILE_DIGITS } from "@/lib/constants/kioskTheme";
-import { baseApi } from "./baseApi";
+import { apiSlice } from "./apiSlice";
 
 const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 
-export const otpApi = baseApi.injectEndpoints({
+export const otpApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
     sendOtp: build.mutation({
       async queryFn({ mobile }) {
@@ -31,7 +31,10 @@ export const otpApi = baseApi.injectEndpoints({
         }
         if (String(otp) !== MOCK_VERIFY_OTP) {
           return {
-            error: { status: 400, data: { message: "Invalid OTP. Try 123456 for demo." } },
+            error: {
+              status: 400,
+              data: { message: "Invalid OTP. Try 123456 for demo." },
+            },
           };
         }
         return {

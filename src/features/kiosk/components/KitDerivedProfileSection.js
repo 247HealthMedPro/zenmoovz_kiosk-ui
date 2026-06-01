@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { RecommendationProfileHeader } from "@/features/kiosk/components/RecommendationProfileHeader";
-import { useAppSelector } from "@/lib/store/hooks";
+import { useAppSelector } from "@/redux/hooks";
 import { formatCategoryRecommendationTitle } from "@/lib/utils/kitCategoryFormat";
 import { cn } from "@/shared/utils/cn";
 

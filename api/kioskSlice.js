@@ -16,7 +16,7 @@ const initialState = {
   wizardCompleted: false,
 };
 
-const kioskSlice = createSlice({
+export const kioskSlice = createSlice({
   name: "kiosk",
   initialState,
   reducers: {
@@ -55,4 +55,7 @@ export const {
   setRecommendationMode,
   resetCricketFlow,
 } = kioskSlice.actions;
+
+export const selectKiosk = (state) => state.kiosk;
+
 export default kioskSlice.reducer;

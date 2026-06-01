@@ -7,8 +7,8 @@ import { motion } from "framer-motion";
 import { KioskButton } from "@/components/ui/KioskButton";
 import { copy } from "@/lib/constants/kioskCopy";
 import { step2PhysicalSchema } from "@/lib/validations/step2PhysicalSchema";
-import { setStep2Data } from "@/lib/store/slices/kioskSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { setStep2Data } from "@/api/kioskSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   AGE_MAX,
   AGE_MIN,
