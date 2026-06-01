@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+:root {
+  --brand: #16304a;
+  --brand-light: #2a4d6e;
+  --brand-deep: #0f2233;
+  --brand-soft: #dce8f2;
+  --brand-muted: #5c7289;
+  --surface: #f2f6fa;
+  --surface-elevated: #ffffff;
+  --surface-subtle: #e8f0f7;
+  --accent: #2a9d8f;
+  --accent-muted: #3dd6c7;
+  --text-primary: #16304a;
+  --text-muted: #5c7289;
+  --text-on-brand: #ffffff;
+  --border: #c5d5e3;
+}
+
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-light: var(--brand-light);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-muted: var(--brand-muted);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-accent: var(--accent);
+  --color-accent-muted: var(--accent-muted);
+  --color-text-primary: var(--text-primary);
+  --color-text-muted: var(--text-muted);
+  --color-text-on-brand: var(--text-on-brand);
+  --color-border: var(--border);
+  --font-sora: var(--next-font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-outfit: var(--next-font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-outfit);
+  --radius-kiosk: 1.25rem;
+  --radius-kiosk-sm: 0.875rem;
+  --shadow-kiosk: 0 18px 48px -12px rgb(22 48 74 / 0.18);
+  --shadow-kiosk-soft: 0 8px 28px rgb(22 48 74 / 0.1);
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
