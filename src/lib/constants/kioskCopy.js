@@ -3,7 +3,7 @@ export const copy = {
   landingSubheadline: "AI-powered recommendations tailored to how you play",
   startExperience: "Start Experience",
   step1Title: "Welcome",
-  step1Subtitle: "Enter your details — we'll send a quick OTP to verify your mobile.",
+  step1Subtitle: "Enter your details — we'll send a quick OTP to your WhatsApp number.",
   step2Title: "Your profile",
   step2Subtitle: "Help us understand you for the best kit fit.",
   step2GenderTitle: "Who is this kit for?",

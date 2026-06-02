@@ -4,9 +4,9 @@ import { isValidIndianMobile, normalizeMobile } from "@/lib/utils/mobileValidati
 
 const mobileField = z
   .string()
-  .min(1, "Mobile is required")
+  .min(1, "WhatsApp number is required")
   .transform(normalizeMobile)
-  .refine(isValidIndianMobile, "Enter a valid 10-digit mobile number");
+  .refine(isValidIndianMobile, "Enter a valid 10-digit WhatsApp number");
 
 export const step1DetailsSchema = z.object({
   name: z.string().min(1, "Name is required").max(80),

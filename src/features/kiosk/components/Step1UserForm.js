@@ -157,7 +157,7 @@ export function Step1UserForm() {
           />
           <FloatingField
             id="mobile"
-            label="Mobile number"
+            label="WhatsApp number"
             error={errors.mobile?.message || mobileHint}
             success={mobileValid && !errors.mobile && !mobileHint ? true : undefined}
             autoComplete="tel"
