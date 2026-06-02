@@ -18,8 +18,10 @@ export function SelectionCard({
       aria-pressed={selected}
       onClick={onClick}
       className={cn(
-        "ui-card-interactive relative flex w-full flex-col items-center justify-center gap-2 p-4 text-center tablet:p-5",
-        compact ? "min-h-[5.5rem]" : "min-h-[6.5rem] kiosk:min-h-[7.5rem]",
+        "ui-card-interactive relative flex w-full flex-col items-center justify-center text-center",
+        compact
+          ? "min-h-[4.75rem] gap-1.5 p-3 tablet:p-4"
+          : "min-h-[6.5rem] gap-2 p-4 tablet:p-5 kiosk:min-h-[7.5rem]",
         selected ? "ui-card-selected" : "text-text-muted",
         className
       )}
@@ -32,11 +34,12 @@ export function SelectionCard({
       {Icon ? (
         <span
           className={cn(
-            "flex h-12 w-12 items-center justify-center rounded-xl",
+            "flex items-center justify-center rounded-xl",
+            compact ? "h-10 w-10" : "h-12 w-12",
             selected ? "bg-accent/20 text-accent" : "bg-surface-subtle text-brand-muted"
           )}
         >
-          <Icon className="h-7 w-7" />
+          <Icon className={cn(compact ? "h-6 w-6" : "h-7 w-7")} />
         </span>
       ) : null}
       <span className="font-sora text-base font-semibold text-brand tablet:text-lg">{title}</span>

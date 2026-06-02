@@ -138,7 +138,7 @@ export function BatRecommendationCard({ rec, brand }) {
   const [guideOpen, setGuideOpen] = useState(false);
   const isBest = rec.rankType === "BEST_MATCH";
   const displayBrand = rec.brand || brand;
-  const pm = rec.playerMatch ?? {};
+  // const pm = rec.playerMatch ?? {};
   const productCode = rec.productCode;
 
   return (
@@ -204,9 +204,11 @@ export function BatRecommendationCard({ rec, brand }) {
           </p>
         ) : null}
 
+        {/* Player match section — temporarily hidden
         <div className="mt-5">
           <PlayerMatchBlock pm={pm} />
         </div>
+        */}
 
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
           <button

@@ -8,7 +8,7 @@ export const MOCK_VERIFY_OTP = "123456";
 export const MOBILE_DIGITS = 10;
 export const OTP_LENGTH = 6;
 
-export const AGE_MIN = 0;
+export const AGE_MIN = 1;
 export const AGE_MAX = 99;
 export const HEIGHT_MIN_CM = 110;
 export const HEIGHT_MAX_CM = 220;
