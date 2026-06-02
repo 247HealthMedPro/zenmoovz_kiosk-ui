@@ -208,6 +208,19 @@ export function BatKnockingGuideModal({ productCode, productName, open, onClose 
                   </KioskButton>
                 </motion.div>
               ) : guide ? (
+                guide.alreadyKnockedIn ? (
+                  <motion.div className="px-4 py-8 sm:px-6 sm:py-10">
+                    {guide.importantNote ? (
+                      <p className="rounded-kiosk-sm border border-emerald-200 bg-emerald-50 px-5 py-4 font-outfit text-base leading-relaxed text-emerald-950 sm:text-lg">
+                        {guide.importantNote}
+                      </p>
+                    ) : (
+                      <p className="text-center font-outfit text-sm text-text-muted">
+                        This bat is already knocked in and ready for use.
+                      </p>
+                    )}
+                  </motion.div>
+                ) : (
                 <motion.div className="space-y-4 px-4 py-5 sm:space-y-5 sm:px-6 sm:py-6">
                   <motion.div className="grid grid-cols-3 gap-3 rounded-kiosk-sm border border-border bg-surface-elevated p-4 text-center sm:gap-4 sm:p-5">
                     <motion.div>
@@ -269,6 +282,7 @@ export function BatKnockingGuideModal({ productCode, productName, open, onClose 
                     </section>
                   </motion.div>
                 </motion.div>
+                )
               ) : null}
             </motion.div>
 
