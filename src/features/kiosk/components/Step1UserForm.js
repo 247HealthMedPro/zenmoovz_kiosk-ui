@@ -29,6 +29,7 @@ import {
   normalizeMobile,
   sanitizeMobileInput,
 } from "@/lib/utils/mobileValidation";
+import { focusWithKeyboard } from "@/lib/utils/kioskKeyboard";
 import { cn } from "@/shared/utils/cn";
 
 export function Step1UserForm() {
@@ -41,9 +42,10 @@ export function Step1UserForm() {
   const [mobileTouched, setMobileTouched] = useState(false);
   const [otpValue, setOtpValue] = useState("");
   const [otpFieldError, setOtpFieldError] = useState(null);
+  const mobileInputRef = useRef(null);
 
   const {
-    register,
+    register,  
     handleSubmit,
     watch,
     setError,
@@ -76,6 +78,12 @@ export function Step1UserForm() {
   const canProceed =
     auth.otpSent && otpValue.length === OTP_LENGTH && !verifying && !sending;
 
+  const [otpAutoFocusKey, setOtpAutoFocusKey] = useState(0);
+
+  useEffect(() => {
+    if (auth.otpSent) setOtpAutoFocusKey((k) => k + 1);
+  }, [auth.otpSent]);
+
   const saveAndGoToProfile = (data) => {
     dispatch(
       setStep1Data({
@@ -102,7 +110,7 @@ export function Step1UserForm() {
       if (!mobileValid) {
         setError("mobile", {
           message:
-            mobileValidationMessage(mobileDigits) || "Enter a valid 10-digit mobile number",
+            mobileValidationMessage(mobileDigits) || "Enter a valid 10-digit WhatsApp number",
         });
       }
       return;
@@ -142,6 +150,23 @@ export function Step1UserForm() {
     }
   });
 
+  const nameField = register("name");
+  const mobileField = register("mobile", {
+    onChange: (e) => {
+      const sanitized = sanitizeMobileInput(e.target.value);
+      if (e.target.value !== sanitized) {
+        e.target.value = sanitized;
+        setValue("mobile", sanitized, { shouldValidate: true, shouldDirty: true });
+      }
+      setMobileTouched(true);
+      if (auth.otpSent || auth.otpVerified) {
+        dispatch(resetOtpFlow());
+        setOtpValue("");
+      }
+    },
+    onBlur: () => setMobileTouched(true),
+  });
+
   return (
     <form onSubmit={onVerifyAndContinue} className="w-full">
       <section className="ui-card-elevated overflow-hidden px-4 py-4 tablet:px-5 tablet:py-5">
@@ -152,8 +177,17 @@ export function Step1UserForm() {
             error={errors.name?.message}
             autoComplete="name"
             inputMode="text"
+            enterKeyHint="next"
             inputClassName="min-h-[3.25rem] pt-6 text-base"
-            {...register("name")}
+            name={nameField.name}
+            ref={nameField.ref}
+            onBlur={(e) => {
+              nameField.onBlur(e);
+              if (nameValue.trim()) {
+                focusWithKeyboard(mobileInputRef.current, { delay: 80 });
+              }
+            }}
+            onChange={nameField.onChange}
           />
           <FloatingField
             id="mobile"
@@ -162,35 +196,28 @@ export function Step1UserForm() {
             success={mobileValid && !errors.mobile && !mobileHint ? true : undefined}
             autoComplete="tel"
             inputMode="numeric"
+            enterKeyHint="done"
             pattern="[0-9]*"
             maxLength={10}
             inputClassName="min-h-[3.25rem] pt-6 text-base"
-            {...register("mobile", {
-              onChange: (e) => {
-                const sanitized = sanitizeMobileInput(e.target.value);
-                if (e.target.value !== sanitized) {
-                  e.target.value = sanitized;
-                  setValue("mobile", sanitized, { shouldValidate: true, shouldDirty: true });
-                }
-                setMobileTouched(true);
-                if (auth.otpSent || auth.otpVerified) {
-                  dispatch(resetOtpFlow());
-                  setOtpValue("");
-                }
-              },
-              onKeyDown: handleMobileKeyDown,
-              onPaste: (e) => {
-                e.preventDefault();
-                const pasted = sanitizeMobileInput(e.clipboardData.getData("text"));
-                setValue("mobile", pasted, { shouldValidate: true, shouldDirty: true });
-                setMobileTouched(true);
-                if (auth.otpSent || auth.otpVerified) {
-                  dispatch(resetOtpFlow());
-                  setOtpValue("");
-                }
-              },
-              onBlur: () => setMobileTouched(true),
-            })}
+            name={mobileField.name}
+            ref={(el) => {
+              mobileField.ref(el);
+              mobileInputRef.current = el;
+            }}
+            onChange={mobileField.onChange}
+            onBlur={mobileField.onBlur}
+            onKeyDown={handleMobileKeyDown}
+            onPaste={(e) => {
+              e.preventDefault();
+              const pasted = sanitizeMobileInput(e.clipboardData.getData("text"));
+              setValue("mobile", pasted, { shouldValidate: true, shouldDirty: true });
+              setMobileTouched(true);
+              if (auth.otpSent || auth.otpVerified) {
+                dispatch(resetOtpFlow());
+                setOtpValue("");
+              }
+            }}
           />
         </div>
 
@@ -216,6 +243,7 @@ export function Step1UserForm() {
                   {copy.otpSentSuccess}
                 </p>
                 <OtpSection
+                  autoFocusKey={otpAutoFocusKey}
                   value={otpValue}
                   onChange={(v) => {
                     setOtpValue(v);
@@ -260,9 +288,29 @@ export function Step1UserForm() {
   );
 }
 
-function OtpSection({ value, onChange, error }) {
+function OtpSection({ value, onChange, error, autoFocusKey }) {
   const refs = useRef([]);
   const digits = value.padEnd(OTP_LENGTH, " ").slice(0, OTP_LENGTH).split("");
+
+  useEffect(() => {
+    if (!autoFocusKey) return;
+    return focusWithKeyboard(refs.current?.[0], { delay: 320 });
+  }, [autoFocusKey]);
+
+  const applyOtpDigits = (raw) => {
+    const next = raw.replace(/\D/g, "").slice(0, OTP_LENGTH);
+    onChange(next);
+    const focusIndex = Math.min(Math.max(next.length - 1, 0), OTP_LENGTH - 1);
+    focusWithKeyboard(refs.current[focusIndex], { delay: 0 });
+  };
+
+  const handlePaste = (e) => {
+    const pasted = e.clipboardData?.getData("text") ?? "";
+    const digitsOnly = pasted.replace(/\D/g, "");
+    if (!digitsOnly) return;
+    e.preventDefault();
+    applyOtpDigits(digitsOnly);
+  };
 
   const setDigit = (index, char) => {
     const next = value.split("");
@@ -280,6 +328,7 @@ function OtpSection({ value, onChange, error }) {
         role="group"
         aria-labelledby="otp-label"
         className="flex justify-center gap-2"
+        onPaste={handlePaste}
       >
         {digits.map((d, i) => (
           <input
@@ -289,13 +338,20 @@ function OtpSection({ value, onChange, error }) {
             }}
             type="text"
             inputMode="numeric"
+            autoComplete={i === 0 ? "one-time-code" : "off"}
+            enterKeyHint={i === OTP_LENGTH - 1 ? "done" : "next"}
             maxLength={1}
             aria-label={`Digit ${i + 1} of ${OTP_LENGTH}`}
             value={d.trim() === "" ? "" : d}
             onChange={(e) => {
-              const c = e.target.value.replace(/\D/g, "");
+              const raw = e.target.value.replace(/\D/g, "");
+              if (raw.length > 1) {
+                applyOtpDigits(raw);
+                return;
+              }
+              const c = raw.slice(-1);
               setDigit(i, c);
-              if (c && i < OTP_LENGTH - 1) refs.current[i + 1]?.focus();
+              if (c && i < OTP_LENGTH - 1) focusWithKeyboard(refs.current[i + 1], { delay: 0 });
             }}
             onKeyDown={(e) => {
               if (e.key === "Backspace" && !digits[i]?.trim() && i > 0) {

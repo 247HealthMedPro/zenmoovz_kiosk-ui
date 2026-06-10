@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { handleKioskInputFocus } from "@/lib/utils/kioskKeyboard";
 import { cn } from "@/shared/utils/cn";
 
 function sanitizeInput(raw, integer) {
@@ -38,7 +39,8 @@ export function KioskSlider({
   const rangeHint = `Enter a value between ${min} and ${max}`;
   const showError = rangeError || error;
 
-  const handleFocus = () => {
+  const handleFocus = (e) => {
+    handleKioskInputFocus(e);
     setFocused(true);
     setDraft("");
     setRangeError(null);
@@ -99,6 +101,8 @@ export function KioskSlider({
             id={numId}
             type="text"
             inputMode={integer ? "numeric" : "decimal"}
+            enterKeyHint="done"
+            autoComplete="off"
             value={focused ? draft : String(safeValue)}
             placeholder={String(min)}
             onFocus={handleFocus}

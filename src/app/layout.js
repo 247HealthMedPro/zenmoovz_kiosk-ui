@@ -42,6 +42,8 @@ export const viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  /** Resize layout when on-screen keyboard opens (Chrome / Android). */
+  interactiveWidget: "resizes-content",
 };
 
 export default function RootLayout({ children }) {
